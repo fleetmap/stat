@@ -6,11 +6,11 @@ var webpack = require('webpack');
 module.exports = {
     context: __dirname + '/src',
     entry: {
-        'js/app':"./scripts/app.js",
+        'js/app':"./app.js",
         'style/style':"./style/style.scss"
     },
     output: {
-        path: __dirname + '/public',
+        path: __dirname,
         filename: "[name].js"
     },
     resolve:{
@@ -24,11 +24,11 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract("css!postcss!sass")
+                loader: ExtractTextPlugin.extract("css!postcss-loader!sass")
             }
         ]
     },
-    postcss:[ autoprefixer({browsers: ['last 2 versions']})],
+    postcss:[ autoprefixer({browsers: ['last 3 versions']})],
     resolveLoader:{
         modulesDirectories: ['node_modules'],
         moduleTemplates: ['*-loader','*'],
@@ -38,6 +38,5 @@ module.exports = {
         new ExtractTextPlugin('[name].css', {allChunks: true})
     ],
     watch: true
-
-
+    
 };
