@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fleetmap.core.District;
+import ru.fleetmap.core.Geometry;
+import ru.fleetmap.core.GeometryFilter;
+import ru.fleetmap.repo.GeometryRepository;
 import ru.fleetmap.services.GeometryLoader;
 
 import java.io.IOException;
@@ -18,12 +21,16 @@ public class MapController {
     @Autowired
     private GeometryLoader geometryLoader;
 
+    @Autowired
+    private GeometryRepository geometryRepository;
+
     @RequestMapping("/test")
-    public List<District> test() throws IOException {
+    public Geometry test() throws IOException {
         return geometryLoader.load();
     }
 
-    public void setGeometryLoader(GeometryLoader geometryLoader) {
-        this.geometryLoader = geometryLoader;
+    @RequestMapping("/find")
+    public Geometry find(GeometryFilter filter) throws IOException {
+        return geometryRepository.findGeometryByFilter(filter);
     }
 }

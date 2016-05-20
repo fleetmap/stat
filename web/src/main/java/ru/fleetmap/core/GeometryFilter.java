@@ -1,13 +1,12 @@
 package ru.fleetmap.core;
 
 /**
- * Created by debalid on 20.05.2016.
+ * Created by debalid on 21.05.2016.
  */
-public class District {
+public class GeometryFilter {
     private String title;
     private String weekDay;
     private Integer hour;
-    private Double Number;
 
     public String getTitle() {
         return title;
@@ -17,12 +16,12 @@ public class District {
         this.title = title;
     }
 
-    public Double getNumber() {
-        return Number;
+    public String getWeekDay() {
+        return weekDay;
     }
 
-    public void setNumber(Double number) {
-        Number = number;
+    public void setWeekDay(String weekDay) {
+        this.weekDay = weekDay;
     }
 
     public Integer getHour() {
@@ -31,13 +30,5 @@ public class District {
 
     public void setHour(Integer hour) {
         this.hour = hour;
-    }
-
-    public String getWeekDay() {
-        return weekDay;
-    }
-
-    public void setWeekDay(String weekDay) {
-        this.weekDay = weekDay;
     }
 }

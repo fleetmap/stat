@@ -1,19 +1,25 @@
 package ru.fleetmap.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.fleetmap.core.District;
+import ru.fleetmap.core.Geometry;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.fasterxml.jackson.databind.DeserializationFeature.*;
 
 /**
  * Created by debalid on 20.05.2016.
@@ -32,10 +38,10 @@ public class GeometryLoader {
     @Value("${core.carsharingMapJson}")
     private String carsharingMapJsonDestination;
 
-    @Cacheable("districts")
-    public List<District> load() throws IOException {
+    @Cacheable("geometry")
+    public Geometry load() throws IOException {
         List<District> districts = loadCsv();
-        return districts;
+        return loadGeometry(districts);
     }
 
     private List<District> loadCsv() throws IOException {
@@ -58,8 +64,8 @@ public class GeometryLoader {
                 District district = new District();
                 district.setTitle(x.get(HEADER_NAME));
                 try {
-                    district.setHour(decimalFormat.parse(x.get(HEADER_HOUR)).doubleValue());
-                    district.setNumber(decimalFormat.parse(x.get(HEADER_HOUR)).doubleValue());
+                    district.setHour(decimalFormat.parse(x.get(HEADER_HOUR)).intValue());
+                    district.setNumber(decimalFormat.parse(x.get(HEADER_NUMBER)).doubleValue());
                 } catch (ParseException e) {
                     e.printStackTrace();
                     throw new RuntimeException("Cannot parse double in " + x.toString());
@@ -71,8 +77,18 @@ public class GeometryLoader {
         }
     }
 
-    private List<District> setGeometry(List<District> loaded) {
-        JSON
+    private Geometry loadGeometry(List<District> loadedDistricts) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Geometry geometry = mapper
+                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .readValue(new File(carsharingMapJsonDestination), Geometry.class);
+
+        geometry.features.forEach(x -> {
+            x.properties.timeline = loadedDistricts.parallelStream() // медленно!
+                    .filter(y -> y.getTitle().toLowerCase().equals(x.properties.name.toLowerCase()))
+                    .collect(Collectors.toList());
+        });
+        return geometry;
     }
 
     public void setSampleDataCsvDestination(String sampleDataCsvDestination) {
