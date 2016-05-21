@@ -19853,18 +19853,12 @@
 	 */
 	var React = __webpack_require__(1);
 	var Map = __webpack_require__(160);
-	var Slider = __webpack_require__(163);
 
 	var FleetStatistic = React.createClass({
 	    displayName: 'FleetStatistic',
 
 	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            { className: 'application' },
-	            React.createElement(Slider, { map: Map }),
-	            React.createElement(Map, null)
-	        );
+	        return React.createElement(Map, null);
 	    }
 	});
 
@@ -19888,9 +19882,146 @@
 	var Map = React.createClass({
 	    displayName: 'Map',
 
+
+	    getInitialState: function getInitialState() {
+	        return { show: false, time: 12, day: 'ПН', active: 'id' };
+	    },
 	    map: null,
+	    mouseDown: function mouseDown() {
+	        this.setState({ show: true });
+	    },
+	    mouseUp: function mouseUp() {
+	        this.setState({ show: false });
+	    },
+	    onChange: function onChange() {
+	        var _this = this;
+
+	        this.setState({ time: document.getElementById('inputRange').value });
+	        clearTimeout(this.timer);
+	        this.timer = setTimeout(function () {
+	            return _this.changeShapshot(_this.map, _this.state.time, _this.state.day);
+	        }, 1000);
+	    },
+	    dayHandler: function dayHandler(day, id) {
+	        var _this2 = this;
+
+	        return function () {
+	            _this2.setState({ day: day });
+	            var elem = document.getElementById(_this2.state.active);
+	            elem.style.color = 'black';
+	            document.getElementById(id).style.color = 'red';
+	            clearTimeout(_this2.timer);
+	            _this2.timer = setTimeout(_this2.changeShapshot(_this2.map, _this2.state.time, _this2.state.day), 1000);
+	        };
+	    },
+	    changeShapshot: function changeShapshot(map, hour, weekDay) {
+	        var xmlhttp = new XMLHttpRequest();
+	        var url = "/api/find?hour=" + hour + "&weekDay=" + weekDay;
+
+	        xmlhttp.onreadystatechange = function () {
+	            console.log('ready');
+	            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+	                var obj;
+
+	                (function () {
+	                    var pickHex = function pickHex(color1, color2, weight) {
+	                        var p = weight;
+	                        var w = p * 2 - 1;
+	                        var w1 = (w / 1 + 1) / 2;
+	                        var w2 = 1 - w1;
+	                        var rgb = [Math.round(color1[0] * w1 + color2[0] * w2), Math.round(color1[1] * w1 + color2[1] * w2), Math.round(color1[2] * w1 + color2[2] * w2)];
+	                        return rgb;
+	                    };
+
+	                    obj = JSON.parse(xmlhttp.responseText);
+
+
+	                    L.geoJson(obj, {
+	                        style: function style(feature) {
+	                            var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
+	                            return {
+	                                color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
+	                            };
+	                        }
+	                    }).addTo(map);
+	                })();
+	            }
+	        };
+	        xmlhttp.open("GET", url, true);
+	        xmlhttp.send();
+	    },
 	    render: function render() {
-	        return React.createElement('div', { id: 'map' });
+	        return React.createElement(
+	            'div',
+	            { className: 'application' },
+	            React.createElement(
+	                'div',
+	                { id: 'slider' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'days' },
+	                    React.createElement(
+	                        'a',
+	                        { id: 'mon', onClick: this.dayHandler('ПН', 'mon') },
+	                        'ПН'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'tue', onClick: this.dayHandler('ВТ', 'tue') },
+	                        'ВТ'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'wen', onClick: this.dayHandler('СР', 'wen') },
+	                        'СР'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'thu', onClick: this.dayHandler('ЧТ', 'thu') },
+	                        'ЧТ'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'fri', onClick: this.dayHandler('ПТ', 'fri') },
+	                        'ПТ'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'sat', onClick: this.dayHandler('СБ', 'sat') },
+	                        'СБ'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { id: 'sun', onClick: this.dayHandler('ВС', 'sun') },
+	                        'ВС'
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { className: 'input' },
+	                    React.createElement(
+	                        'span',
+	                        null,
+	                        '0:00'
+	                    ),
+	                    React.createElement('input', { id: 'inputRange', type: 'range', min: '0', max: '24', step: '1', onMouseDown: this.mouseDown,
+	                        onMouseUp: this.mouseUp,
+	                        onChange: this.onChange }),
+	                    React.createElement(
+	                        'span',
+	                        null,
+	                        '23:59'
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { className: 'time' },
+	                    this.state.time,
+	                    ':00'
+	                )
+	            ),
+	            React.createElement('div', { id: 'map' })
+	        );
 	    },
 	    componentDidMount: function componentDidMount() {
 	        this.map = L.map('map', {
@@ -19900,7 +20031,8 @@
 	        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 	            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	        }).addTo(this.map);
-	    } });
+	    }
+	});
 
 	module.exports = Map;
 
@@ -20458,161 +20590,6 @@
 		}
 		return module;
 	};
-
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/vlad/Projects/stat/stat/web/src/main/resources/static/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/vlad/Projects/stat/stat/web/src/main/resources/static/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-
-	'use strict';
-
-	/**
-	 * Created by vlad on 21.05.16.
-	 */
-	var React = __webpack_require__(1);
-
-	var Slider = React.createClass({
-	    displayName: 'Slider',
-
-	    getInitialState: function getInitialState() {
-	        return { show: false, time: 12, day: 'ПН', active: 'id' };
-	    },
-
-	    mouseDown: function mouseDown() {
-	        this.setState({ show: true });
-	    },
-	    mouseUp: function mouseUp() {
-	        this.setState({ show: false });
-	    },
-	    onChange: function onChange() {
-	        var _this = this;
-
-	        this.setState({ time: document.getElementById('inputRange').value });
-	        clearTimeout(this.timer);
-	        this.timer = setTimeout(function () {
-	            return _this.changeShapshot(_this.props.map.map, _this.state.time, _this.state.day);
-	        }, 1000);
-	    },
-	    dayHandler: function dayHandler(day, id) {
-	        var _this2 = this;
-
-	        return function () {
-	            _this2.setState({ day: day });
-	            document.getElementById(_this2.state.active);
-	            clearTimeout(_this2.timer);
-	            _this2.timer = setTimeout(_this2.changeShapshot(_this2.props.map.map, _this2.state.time, _this2.state.day), 1000);
-	        };
-	    },
-	    changeShapshot: function changeShapshot(map, hour, weekDay) {
-	        var xmlhttp = new XMLHttpRequest();
-	        var url = "/api/find?hour=" + hour + "&weekDay=" + weekDay;
-
-	        xmlhttp.onreadystatechange = function () {
-	            console.log('ready');
-	            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-	                var obj;
-
-	                (function () {
-	                    var pickHex = function pickHex(color1, color2, weight) {
-	                        var p = weight;
-	                        var w = p * 2 - 1;
-	                        var w1 = (w / 1 + 1) / 2;
-	                        var w2 = 1 - w1;
-	                        var rgb = [Math.round(color1[0] * w1 + color2[0] * w2), Math.round(color1[1] * w1 + color2[1] * w2), Math.round(color1[2] * w1 + color2[2] * w2)];
-	                        return rgb;
-	                    };
-
-	                    obj = JSON.parse(xmlhttp.responseText);
-
-
-	                    L.geoJson(obj, {
-	                        style: function style(feature) {
-	                            var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
-	                            return {
-	                                color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
-	                            };
-	                        }
-	                    }).addTo(map);
-	                })();
-	            }
-	        };
-	        xmlhttp.open("GET", url, true);
-	        xmlhttp.send();
-	    },
-
-	    render: function render() {
-
-	        return React.createElement(
-	            'div',
-	            { id: 'slider' },
-	            React.createElement(
-	                'div',
-	                { className: 'days' },
-	                React.createElement(
-	                    'a',
-	                    { id: 'mon', onClick: this.dayHandler('ПН', 'mon') },
-	                    'ПН'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'tue', onClick: this.dayHandler('ВТ', 'tue') },
-	                    'ВТ'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'wen', onClick: this.dayHandler('СР', 'wen') },
-	                    'СР'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'thu', onClick: this.dayHandler('ЧТ', 'thu') },
-	                    'ЧТ'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'fri', onClick: this.dayHandler('ПТ', 'fri') },
-	                    'ПТ'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'sat', onClick: this.dayHandler('СБ', 'sat') },
-	                    'СБ'
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { id: 'sun', onClick: this.dayHandler('ВС', 'sun') },
-	                    'ВС'
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'input' },
-	                React.createElement(
-	                    'span',
-	                    null,
-	                    '0:00'
-	                ),
-	                React.createElement('input', { id: 'inputRange', type: 'range', min: '0', max: '24', step: '1', onMouseDown: this.mouseDown, onMouseUp: this.mouseUp,
-	                    onChange: this.onChange }),
-	                React.createElement(
-	                    'span',
-	                    null,
-	                    '23:59'
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'time' },
-	                this.state.time,
-	                ':00'
-	            )
-	        );
-	    }
-	});
-	module.exports = Slider;
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/vlad/Projects/stat/stat/web/src/main/resources/static/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "slider.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ }
 /******/ ]);
