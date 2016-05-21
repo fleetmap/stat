@@ -18,6 +18,11 @@ var loadHistory = function(districtName, id) {
             var arr = JSON.parse(xmlhttp.responseText);
             //console.log('chart', arr);
             //popup.id - div id for chart
+            var now = new Date();
+            var index = 24 * (now.getDay() == 0 ? 6 : now.getDay() - 1) + now.getHours();
+            console.log(arr, index);
+            document.getElementById('s' + id).innerHTML = "В данный момент доступно " +
+                arr[indexgit p] + " машин.";
             lineChart(arr, id);
         }
     };
@@ -29,6 +34,7 @@ var bindPopUp = function (feature, layer) {
     var id = generateUUID();
     layer.bindPopup(buildPopUp(feature, id,
         "<div id='d"+ id + "' style='min-height: " + chartHeight + "'>" +
+        "<span id='s" + id + "'></span>" +
         "<canvas id='c" + id +"' width='" + chartWidth+ "' height='" + chartHeight + "'></canvas>" +
         "</div>"
     ));

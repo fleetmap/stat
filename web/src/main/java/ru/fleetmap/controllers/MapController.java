@@ -12,6 +12,7 @@ import ru.fleetmap.services.GeometryLoader;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,11 @@ public class MapController {
         List<Integer> history = geometry.features.parallelStream()
                 .map(feature -> feature.properties.timeline)
                 .findFirst()
-                .map(districts -> districts.stream().map(District::getCount).collect(Collectors.toList()))
+                .map(districts -> districts.stream()
+                        //.sorted((x, y) -> 31 * (day(x.getWeekDay()) - day(y.getWeekDay() + (x.getHour() - y.getHour()))))
+                        .sorted(Comparator.comparing(x -> 24 * day(x.getWeekDay()) + x.getHour()))
+                        .map(District::getCount)
+                        .collect(Collectors.toList()))
                 .orElseGet(Collections::emptyList);
         return history;
     }
@@ -60,5 +65,25 @@ public class MapController {
             }
         }
         return max;
+    }
+
+    private int day(String pt) {
+        switch (pt.toLowerCase()) {
+            case "пн":
+                return 0;
+            case "вт":
+                return 1;
+            case "ср":
+                return 2;
+            case "чт":
+                return 3;
+            case "пт":
+                return 4;
+            case "сб":
+                return 5;
+            case "вс":
+                return 6;
+            default: return 0;
+        }
     }
 }
