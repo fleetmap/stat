@@ -6,7 +6,7 @@ var L = require('leaflet');
 var Map = React.createClass({
 
         getInitialState: function () {
-            return ({show: false, time: 12, day: 'ПН', active: 'id'})
+            return ({show: false, time: 12, day: 'ПН', active: null})
         },
         map: null,
         mouseDown: function () {
@@ -22,15 +22,18 @@ var Map = React.createClass({
         },
         dayHandler: function (day, id) {
             return ()=> {
-                this.setState({day: day});
                 var elem = document.getElementById(this.state.active);
-                elem .style.color = 'black';
+                if (elem !== undefined && elem != null) {
+                    elem.style.color = 'black';
+                }
+                this.setState({day: day, active: id});
                 document.getElementById(id).style.color = 'red';
                 clearTimeout(this.timer);
                 this.timer = setTimeout(this.changeShapshot(this.map, this.state.time, this.state.day), 1000);
             }
         },
         changeShapshot: function (map, hour, weekDay) {
+            if (hour == 24) hour = 0;
             var xmlhttp = new XMLHttpRequest();
             var url = "/api/find?hour=" + hour + "&weekDay=" + weekDay;
 
@@ -49,17 +52,21 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
-
-                    L.geoJson(obj, {
+                    var layer = L.geoJson(obj, {
                         style: function (feature) {
                             var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
                             return {
                                 color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
                             }
                         }
-                    }).addTo(map);
+                    });
+                    if (this.state.layer != null){
+                        map.removeLayer(this.state.layer);
+                    }
+                    layer.addTo(map);
+                    this.setState({layer: layer});
                 }
-            };
+            }.bind(this);
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
         },

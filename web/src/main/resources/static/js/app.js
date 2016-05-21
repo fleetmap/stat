@@ -19884,7 +19884,7 @@
 
 
 	    getInitialState: function getInitialState() {
-	        return { show: false, time: 12, day: 'ПН', active: 'id' };
+	        return { show: false, time: 12, day: 'ПН', active: null };
 	    },
 	    map: null,
 	    mouseDown: function mouseDown() {
@@ -19906,22 +19906,28 @@
 	        var _this2 = this;
 
 	        return function () {
-	            _this2.setState({ day: day });
 	            var elem = document.getElementById(_this2.state.active);
-	            elem.style.color = 'black';
+	            if (elem !== undefined && elem != null) {
+	                elem.style.color = 'black';
+	            }
+	            _this2.setState({ day: day, active: id });
 	            document.getElementById(id).style.color = 'red';
 	            clearTimeout(_this2.timer);
 	            _this2.timer = setTimeout(_this2.changeShapshot(_this2.map, _this2.state.time, _this2.state.day), 1000);
 	        };
 	    },
 	    changeShapshot: function changeShapshot(map, hour, weekDay) {
+	        if (hour == 24) hour = 0;
 	        var xmlhttp = new XMLHttpRequest();
 	        var url = "/api/find?hour=" + hour + "&weekDay=" + weekDay;
 
 	        xmlhttp.onreadystatechange = function () {
+	            var _this3 = this;
+
 	            console.log('ready');
 	            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 	                var obj;
+	                var layer;
 
 	                (function () {
 	                    var pickHex = function pickHex(color1, color2, weight) {
@@ -19934,19 +19940,23 @@
 	                    };
 
 	                    obj = JSON.parse(xmlhttp.responseText);
-
-
-	                    L.geoJson(obj, {
+	                    layer = L.geoJson(obj, {
 	                        style: function style(feature) {
 	                            var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
 	                            return {
 	                                color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
 	                            };
 	                        }
-	                    }).addTo(map);
+	                    });
+
+	                    if (_this3.state.layer != null) {
+	                        map.removeLayer(_this3.state.layer);
+	                    }
+	                    layer.addTo(map);
+	                    _this3.setState({ layer: layer });
 	                })();
 	            }
-	        };
+	        }.bind(this);
 	        xmlhttp.open("GET", url, true);
 	        xmlhttp.send();
 	    },
