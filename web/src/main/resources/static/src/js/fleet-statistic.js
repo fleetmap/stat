@@ -9,7 +9,7 @@ var FleetStatistic = React.createClass({
         render: function () {
             return (
                 <div className="application">
-                    <Slider/>
+                    <Slider map={Map}/>
                     <Map/>
                 </div>
             )
