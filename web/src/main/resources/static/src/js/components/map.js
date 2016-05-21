@@ -53,16 +53,9 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-
-                    /*L.geoJson(obj, {
-=======
->>>>>>> 56ac75581e011c5c849adfcd22eaf6fb8663118a
+                    if (this.state.layer != null)
+                        this.map.removeLayer(this.state.layer);
                     var layer = L.geoJson(obj, {
->>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
                         style: function (feature) {
                             var color = pickHex([0, 255, 0], [255, 0, 0], feature.properties.timeLine[0].number); //magic
                             return {
@@ -70,21 +63,13 @@ var Map = React.createClass({
                                 color: 'black',
                                 weight: 1,
                                 fillOpacity: 0.65
-
                             }
-<<<<<<< HEAD
                         },
                         onEachFeature: chart.bindPopUp
-                    }).addTo(map);*/
-=======
-                        }
                     });
-                    if (this.state.layer != null) {
-                        map.removeLayer(this.state.layer);
-                    }
                     layer.addTo(map);
                     this.setState({layer: layer});
->>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
+
                 }
             }.bind(this);
             xmlhttp.open("GET", url, true);
@@ -118,7 +103,8 @@ var Map = React.createClass({
                 </div>
 
             )
-        },
+        }
+        ,
         componentDidMount: function () {
             this.map = L.map('map', {
                 center: [55.75, 37.61],
@@ -130,7 +116,8 @@ var Map = React.createClass({
             }).addTo(this.map);
         }
     }
-);
+    )
+    ;
 
 
 module.exports = Map;
