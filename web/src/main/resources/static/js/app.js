@@ -19909,7 +19909,7 @@
 	        return function () {
 	            var elem = document.getElementById(_this2.state.active);
 	            if (elem !== undefined && elem != null) {
-	                elem.style.color = 'black';
+	                elem.style.color = 'white';
 	            }
 	            _this2.setState({ day: day, active: id });
 	            document.getElementById(id).style.color = 'red';
@@ -19978,37 +19978,66 @@
 	                    React.createElement(
 	                        'a',
 	                        { id: 'mon', onClick: this.dayHandler('ПН', 'mon') },
-	                        'ПН'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'ПН'
+	                        ),
+	                        ' '
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'tue', onClick: this.dayHandler('ВТ', 'tue') },
-	                        'ВТ'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'ВТ'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'wen', onClick: this.dayHandler('СР', 'wen') },
-	                        'СР'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'СР'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'thu', onClick: this.dayHandler('ЧТ', 'thu') },
-	                        'ЧТ'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'ЧТ'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'fri', onClick: this.dayHandler('ПТ', 'fri') },
-	                        'ПТ'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'ПТ'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'sat', onClick: this.dayHandler('СБ', 'sat') },
-	                        'СБ'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'СБ'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'a',
 	                        { id: 'sun', onClick: this.dayHandler('ВС', 'sun') },
-	                        'ВС'
+	                        React.createElement(
+	                            'span',
+	                            null,
+	                            'ВС'
+	                        )
 	                    )
 	                ),
 	                React.createElement(
@@ -20019,7 +20048,7 @@
 	                        null,
 	                        '0:00'
 	                    ),
-	                    React.createElement('input', { id: 'inputRange', type: 'range', min: '0', max: '24', step: '1', onMouseDown: this.mouseDown,
+	                    React.createElement('input', { id: 'inputRange', type: 'range', min: '0', max: '23', step: '1', onMouseDown: this.mouseDown,
 	                        onMouseUp: this.mouseUp,
 	                        onChange: this.onChange }),
 	                    React.createElement(
@@ -20032,7 +20061,28 @@
 	                    'div',
 	                    { className: 'time' },
 	                    this.state.time,
-	                    ':00'
+	                    ':00 - ',
+	                    this.state.time,
+	                    ':59'
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { className: 'heatbox' },
+	                    ' ',
+	                    React.createElement(
+	                        'span',
+	                        null,
+	                        'Меньше'
+	                    ),
+	                    ' ',
+	                    React.createElement('div', { className: 'heatmap' }),
+	                    ' ',
+	                    React.createElement(
+	                        'span',
+	                        null,
+	                        'Больше'
+	                    ),
+	                    ' '
 	                )
 	            ),
 	            React.createElement('div', { id: 'map' })

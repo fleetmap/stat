@@ -25,7 +25,7 @@ var Map = React.createClass({
             return ()=> {
                 var elem = document.getElementById(this.state.active);
                 if (elem !== undefined && elem != null) {
-                    elem.style.color = 'black';
+                    elem.style.color = 'white';
                 }
                 this.setState({day: day, active: id});
                 document.getElementById(id).style.color = 'red';
@@ -81,23 +81,25 @@ var Map = React.createClass({
                 <div className="application">
                     <div id="slider">
                         <div className="days">
-                            <a id="mon" onClick={this.dayHandler('ПН', 'mon')}>ПН</a>
-                            <a id="tue" onClick={this.dayHandler('ВТ', 'tue')}>ВТ</a>
-                            <a id="wen" onClick={this.dayHandler('СР', 'wen')}>СР</a>
-                            <a id="thu" onClick={this.dayHandler('ЧТ', 'thu')}>ЧТ</a>
-                            <a id="fri" onClick={this.dayHandler('ПТ', 'fri')}>ПТ</a>
-                            <a id="sat" onClick={this.dayHandler('СБ', 'sat')}>СБ</a>
-                            <a id="sun" onClick={this.dayHandler('ВС', 'sun')}>ВС</a>
+                            <a id="mon" onClick={this.dayHandler('ПН', 'mon')}><span>ПН</span> </a>
+                            <a id="tue" onClick={this.dayHandler('ВТ', 'tue')}><span>ВТ</span></a>
+                            <a id="wen" onClick={this.dayHandler('СР', 'wen')}><span>СР</span></a>
+                            <a id="thu" onClick={this.dayHandler('ЧТ', 'thu')}><span>ЧТ</span></a>
+                            <a id="fri" onClick={this.dayHandler('ПТ', 'fri')}><span>ПТ</span></a>
+                            <a id="sat" onClick={this.dayHandler('СБ', 'sat')}><span>СБ</span></a>
+                            <a id="sun" onClick={this.dayHandler('ВС', 'sun')}><span>ВС</span></a>
                         </div>
                         <div className="input">
                             <span>0:00</span>
-                            <input id="inputRange" type="range" min="0" max="24" step="1" onMouseDown={this.mouseDown}
+                            <input id="inputRange" type="range" min="0" max="23" step="1" onMouseDown={this.mouseDown}
                                    onMouseUp={this.mouseUp}
                                    onChange={this.onChange}/>
                             <span>23:59</span>
 
                         </div>
-                        <div className="time">{this.state.time}:00</div>
+                        <div className="time">{this.state.time}:00 - {this.state.time}:59</div>
+                        
+                        <div className="heatbox"> <span>Меньше</span> <div className="heatmap"></div> <span>Больше</span> </div>
 
                     </div>
                     <div id="map"></div>
