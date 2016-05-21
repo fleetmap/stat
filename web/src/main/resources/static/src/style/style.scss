@@ -16,12 +16,18 @@ body{
     align-items: center;
     justify-content: space-around;
     width: 400px;
-    height: 70px;
+    height: 100px;
     padding: 15px;
     .days{
       width: 400px;
+      padding: 10px 0;
+      //margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
+      a{
+        cursor: pointer;
+      }
+
     }
     .input{
       width: 400px;

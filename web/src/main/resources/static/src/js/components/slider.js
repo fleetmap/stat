@@ -4,9 +4,10 @@
 var React = require('react');
 
 
+
 var Slider = React.createClass({
     getInitialState: function () {
-        return ({show: false, time: 12, day: 'ПН'})
+        return ({show: false, time: 12, day: 'ПН', active: 'id'})
     },
 
     mouseDown: function () {
@@ -18,9 +19,12 @@ var Slider = React.createClass({
     onChange: function () {
         this.setState({time: document.getElementById('inputRange').value})
     },
-    dayHandler: function (day) {
+    dayHandler: function (day, id) {
       return()=> {
           this.setState({day: day});
+          document.getElementById(this.state.active);
+          
+          
           console.log(this.state);
       }
     },
@@ -30,13 +34,13 @@ var Slider = React.createClass({
         return (
             <div id="slider">
                 <div className="days">
-                    <a onClick={this.dayHandler('ПН')}>ПН</a>
-                    <a onClick={this.dayHandler('ВТ')}>ВТ</a>
-                    <a onClick={this.dayHandler('СР')}>СР</a>
-                    <a onClick={this.dayHandler('ЧТ')}>ЧТ</a>
-                    <a onClick={this.dayHandler('ПТ')}>ПТ</a>
-                    <a onClick={this.dayHandler('СБ')}>СБ</a>
-                    <a onClick={this.dayHandler('ВС')}>ВС</a>
+                    <a id="mon" onClick={this.dayHandler('ПН', mon)}>ПН</a>
+                    <a id="tue" onClick={this.dayHandler('ВТ', tue)}>ВТ</a>
+                    <a id="wen" onClick={this.dayHandler('СР', wen)}>СР</a>
+                    <a id="thu" onClick={this.dayHandler('ЧТ', thu)}>ЧТ</a>
+                    <a id="fri" onClick={this.dayHandler('ПТ', fri)}>ПТ</a>
+                    <a id="sat" onClick={this.dayHandler('СБ', sat)}>СБ</a>
+                    <a id="sun" onClick={this.dayHandler('ВС', sun)}>ВС</a>
                 </div>
                 <div className="input">
                     <span>0:00</span>

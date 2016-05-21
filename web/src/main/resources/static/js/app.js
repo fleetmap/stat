@@ -20477,7 +20477,7 @@
 	    displayName: 'Slider',
 
 	    getInitialState: function getInitialState() {
-	        return { show: false, time: 12, day: 'ПН' };
+	        return { show: false, time: 12, day: 'ПН', active: 'id' };
 	    },
 
 	    mouseDown: function mouseDown() {
@@ -20489,11 +20489,13 @@
 	    onChange: function onChange() {
 	        this.setState({ time: document.getElementById('inputRange').value });
 	    },
-	    dayHandler: function dayHandler(day) {
+	    dayHandler: function dayHandler(day, id) {
 	        var _this = this;
 
 	        return function () {
 	            _this.setState({ day: day });
+	            document.getElementById(_this.state.active);
+
 	            console.log(_this.state);
 	        };
 	    },
@@ -20508,37 +20510,37 @@
 	                { className: 'days' },
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('ПН') },
+	                    { id: 'mon', onClick: this.dayHandler('ПН', mon) },
 	                    'ПН'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('ВТ') },
+	                    { id: 'tue', onClick: this.dayHandler('ВТ', tue) },
 	                    'ВТ'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('СР') },
+	                    { id: 'wen', onClick: this.dayHandler('СР', wen) },
 	                    'СР'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('ЧТ') },
+	                    { id: 'thu', onClick: this.dayHandler('ЧТ', thu) },
 	                    'ЧТ'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('ПТ') },
+	                    { id: 'fri', onClick: this.dayHandler('ПТ', fri) },
 	                    'ПТ'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('СБ') },
+	                    { id: 'sat', onClick: this.dayHandler('СБ', sat) },
 	                    'СБ'
 	                ),
 	                React.createElement(
 	                    'a',
-	                    { onClick: this.dayHandler('ВС') },
+	                    { id: 'sun', onClick: this.dayHandler('ВС', sun) },
 	                    'ВС'
 	                )
 	            ),
