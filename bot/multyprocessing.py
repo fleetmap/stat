@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import sys
-import time, random, telepot, pprint, codecs, urllib2, json
-
+import time, random, telepot, pprint, codecs, urllib2, json, datetime
+ar =[]
 
 import pandas as pd
 import numpy as np
+import googlemaps
+gmaps = googlemaps.Client(key='AIzaSyCKZLV1GtXCcypFPRkqzniMIy1zb_E5NlE')
 
 
 # connection = psycopg2.connect(host="localhost", port=5432,
@@ -48,6 +50,7 @@ def getCurrentCar(carNumber):
 
 
 def message(msg):
+
     if(msg['text'].encode('utf-8') == 'FleetMap'):
         show_keyboard = {'keyboard': [['Найти ближашую машину'], ['Прогноз','Назад']]}
         bot.sendMessage(msg['from']['id'], 'This is a custom keyboard', reply_markup=show_keyboard)
@@ -101,7 +104,7 @@ def handle_message(msg):
             show_keyboard = {'keyboard': [['Найти ближашую машину'], ['Прогноз', 'Назад']]}
             bot.sendMessage(msg['from']['id'], 'Поиск машины',reply_markup=show_keyboard)
 
-        if(msg['text'].encode('utf-8') == 'Найти ближашую машину'):
+        if(msg['text'].encode('utf-8') == 'Найти ближайую машину'):
 
             bot.sendMessage(msg['from']['id'], 'Введите ваше геоположение')
 
@@ -110,8 +113,6 @@ def handle_message(msg):
         if(msg['text'].encode('utf-8') == 'Прогноз'):
             show_keyboard = {'keyboard': [['Понедельник'], ['Вторник'],['Среда'],['Четверг'],['Пятница'],['Суббота'],['Воскресенье']]}
             bot.sendMessage(msg['from']['id'], 'Выберите день на который хотите посмотреть статистику',reply_markup=show_keyboard)
-
-
 
         if( msg['text'].encode('utf-8') == 'Понедельник' or
             msg['text'].encode('utf-8') == 'Вторник' or
@@ -124,6 +125,7 @@ def handle_message(msg):
                                           ['День'],
                                           ['Вечер'],
                                           ['Ночь']]}
+            ar.append(msg['text'].encode('utf-8'))
             bot.sendMessage(msg['from']['id'], 'Вы выбрали' + " " + msg['text'].encode('utf-8') + ". " + 'Теперь выберите время суток',reply_markup=show_keyboard)
 
         if(msg['text'].encode('utf-8') == 'Вернуться'):
@@ -177,8 +179,14 @@ def handle_message(msg):
             msg['text'].encode('utf-8') == '23:00' or
             msg['text'].encode('utf-8') == '24:00'):
 
-                show_keyboard = {'keyboard': [['Посмотреть прогноз'], ['Вернуться']]}
-                bot.sendMessage(msg['from']['id'],'"' + msg['text'].encode('utf-8') + '"', reply_markup=show_keyboard)
+
+                #print(get_prediction([55.7522200,37.6155600]))
+                if get_prediction([55.7522200,37.6155600]) > 1:
+                    bot.sendMessage(msg['from']['id'], "Предположительно в выбранный вами день и час в указанном районе вас будет свободный автомобиль")
+                else:
+                    bot.sendMessage(msg['from']['id'], "Вероятность появления автомобиля в данной локации крайне мала")
+                show_keyboard = {'keyboard': [['Вернуться']]}
+                bot.sendMessage(msg['from']['id'], "Удачной поздки", reply_markup=show_keyboard)
 
 
 
@@ -187,6 +195,16 @@ def handle_message(msg):
         if(msg['text'].encode('utf-8') == 'Назад'):
             show_keyboard = {'keyboard': [['Найти ближашую машину'], ['Прогноз','Назад']]}
             bot.sendMessage(msg['from']['id'], 'Вы вернулись назад, выберете требующуюся команду', reply_markup=show_keyboard)
+
+        if(msg['text'].encode('utf-8') == 'Посмотреть прогноз'):
+            bot.sendMessage(msg['from']['id'], 'Можем помочь вам сэкономить ваше время и деньги. Хотите воспользоваться услугой?')
+            show_keyboard = {'keyboard': [['Хочу'], ['Не хочу','Назад']]}
+            bot.sendMessage(msg['from']['id'], 'Ок', reply_markup=show_keyboard)
+        ####
+
+        if(msg['text'].encode('utf-8') == 'Хочу'):
+            show_keyboard = {'keyboard': [['Вернуться']]}
+            bot.sendMessage(msg['from']['id'], calc_time([55.835117, 37.636836],[55.770494, 37.634333]), reply_markup=show_keyboard)
 
         try:
             if(msg['text'].encode('utf-8') == '1'):
@@ -240,8 +258,8 @@ def handle_message(msg):
             bot.sendMessage(msg['from']['id'], 'Вы вошли в режим ожидания', reply_markup=show_keyboard)
 
         if( msg['text'].encode('utf-8') == 'Завершить аренду'):
-            show_keyboard = {'keyboard': [['Найти ближашую машину'], ['Назад']]}
-            bot.sendMessage(msg['from']['id'], 'Спасибо за использование нашего сервиса', reply_markup=show_keyboard)
+            show_keyboard = {'keyboard': [['Найти ближашую машину'], ['Прогноз', 'Назад']]}
+            bot.sendMessage(msg['from']['id'], 'Спасибо за использование нашего сервиса. ', reply_markup=show_keyboard)
 
         if( msg['text'].encode('utf-8') == 'Продолжить аренду'):
             show_keyboard = {'keyboard': [['Режим ожидания'], ['Завершить аренду']]}
@@ -294,7 +312,22 @@ def get_prediction(user_lat_lon):
                                          &(prognoz.Hour==dt.hour))|((prognoz.Weekday==dt1.weekday())
                                                                     &(prognoz.Hour==dt1.hour)))].Number.mean()
 
-
+def calc_time(user_lat_lon,destination):
+    from datetime import datetime
+    now = datetime.now()
+    directions_result = gmaps.directions(user_lat_lon, destination, mode="driving", departure_time=now)
+    km=directions_result[0]['legs'][0]['distance']['value']/1000
+    mins=directions_result[0]['legs'][0]['duration']['value']/60
+    carsharing=[km,mins,mins*7]
+    taxi=[km,mins,mins*7+km*8]
+    directions_result = gmaps.directions(user_lat_lon, destination, mode="transit", departure_time=now)
+    km=directions_result[0]['legs'][0]['distance']['value']/1000
+    mins=directions_result[0]['legs'][0]['duration']['value']/60
+    public=[km,mins,60]
+    s1= u"Поездка на каршеринге "+str(carsharing[0])+u" минут, "+str(carsharing[1])+u" км. Цена: "+str(carsharing[2])+u" руб.\n"
+    s1+= u"Поездка на такси "+str(taxi[0])+u" минут, "+str(taxi[1])+u" км. Цена: "+str(taxi[2])+u" руб.\n"
+    s1+= u"Поездка на ОТ "+str(public[0])+u" минут, "+str(public[1])+u" км. Цена: "+str(public[2])+u" руб.\n"
+    return s1
 
 col_type={'RecordId':int,'ExternalId':str,'ExternalName':str,'Latitude':str,'Longitude':str, 'RegistrationNumber':str, 'Vin':str,
           'ColorName':str,'ModelName':str, 'UpdatedAt':pd.datetime, 'Provider':int, 'IsOk':int, 'Epoch':int,'Source':str, 'GasPercent':str}
@@ -320,8 +353,8 @@ mos_reg_data_MO = json.load(reader(response_MO))
 MO_polygons = get_polygons(mos_reg_data_MO)
 MO_polygons = [[i[0],Path(i[1])] for i in MO_polygons]
 
-
-
+   #print (calc_time("55.7522200, 37.6155600","65.7522200, 47.6155600"))
+#print (calc_time([55.7522200,37.6155600],[55.852,37.618]) )
 
 bot.notifyOnMessage(handle_message)
 
