@@ -1,7 +1,7 @@
+import datetime
+from django.utils.timezone import get_current_timezone
+tz = get_current_timezone()
 
-res = [str(x) for x in xrange(1, 6)]
-show_keyboard1 = {'keyboard': [res]}
-tmp_message = ''
-for i in range(len(res)):
-    tmp_message = tmp_message + str(i) + '\n'
-bot.sendMessage(msg['from']['id'], '1212', reply_markup=show_keyboard1)
+format = '%b %d %Y %I:%M%p'
+date_object = datetime.datetime.strptime('Jun 1 2005  1:33PM', format)
+date_obj = tz.localize(date_object)
