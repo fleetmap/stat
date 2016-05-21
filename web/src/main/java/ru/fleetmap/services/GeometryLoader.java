@@ -59,13 +59,13 @@ public class GeometryLoader {
 
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
-            List<District> districts = new ArrayList<District>();
+            List<District> districts = new ArrayList<>();
             iterator.forEachRemaining(x -> {
                 District district = new District();
                 district.setTitle(x.get(HEADER_NAME));
                 try {
                     district.setHour(decimalFormat.parse(x.get(HEADER_HOUR)).intValue());
-                    district.setNumber(decimalFormat.parse(x.get(HEADER_NUMBER)).doubleValue());
+                    district.setNumber(Double.parseDouble(x.get(HEADER_NUMBER)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                     throw new RuntimeException("Cannot parse double in " + x.toString());

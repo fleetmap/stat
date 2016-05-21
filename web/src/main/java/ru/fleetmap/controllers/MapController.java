@@ -11,7 +11,9 @@ import ru.fleetmap.repo.GeometryRepository;
 import ru.fleetmap.services.GeometryLoader;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by debalid on 20.05.2016.
@@ -33,6 +35,19 @@ public class MapController {
     @RequestMapping("/find")
     public Geometry find(GeometryFilter filter) throws IOException {
         return geometryRepository.findGeometryByFilter(filter);
+    }
+
+    @RequestMapping("/week_history")
+    public List<Double> weekHistory (String name) throws IOException {
+        GeometryFilter filter = new GeometryFilter();
+        filter.setTitle(name);
+        Geometry geometry = geometryRepository.findGeometryByFilter(filter);
+        List<Double> history = geometry.features.parallelStream()
+                .map(feature -> feature.properties.timeline)
+                .findFirst()
+                .map(districts -> districts.stream().map(District::getNumber).collect(Collectors.toList()))
+                .orElseGet(Collections::emptyList);
+        return history;
     }
 
     //костыль
