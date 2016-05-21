@@ -3,6 +3,7 @@
  */
 var React = require('react');
 var L = require('leaflet');
+var chart = require('./chart');
 var Map = React.createClass({
 
         getInitialState: function () {
@@ -50,14 +51,15 @@ var Map = React.createClass({
                         return rgb;
                     }
 
-                    L.geoJson(obj, {
+                    /*L.geoJson(obj, {
                         style: function (feature) {
                             var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
                             return {
                                 color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
                             }
-                        }
-                    }).addTo(map);
+                        },
+                        onEachFeature: chart.bindPopUp
+                    }).addTo(map);*/
                 }
             };
             xmlhttp.open("GET", url, true);
@@ -97,6 +99,7 @@ var Map = React.createClass({
                 center: [55.75, 37.61],
                 zoom: 13
             });
+            this.map.on('popupopen', chart.onPopUpOpen);
             L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(this.map);
