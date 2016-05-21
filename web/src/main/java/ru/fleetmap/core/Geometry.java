@@ -13,6 +13,8 @@ public class Geometry implements Serializable {
     public List<Feature> features;
     @JsonProperty("type")
     public String type;
+    @JsonProperty("crs")
+    public Object crs;
 
     public static class Feature {
         @JsonProperty("properties")

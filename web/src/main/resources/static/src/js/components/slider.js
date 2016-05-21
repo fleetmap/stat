@@ -2,39 +2,50 @@
  * Created by vlad on 21.05.16.
  */
 var React = require('react');
-var RCSlider = require('rc-slider');
 
-const marks = {
-    0: '0:00',
-    3: '3:00',
-    6: '6:00',
-    9: '9:00',
-    12: '12:00',
-    15: '15:00',
-    18: '18:00',
-    21: '21:00',
-    24: '24:00'
-};
 
 var Slider = React.createClass({
+    getInitialState: function () {
+        return ({show: false, time: 12, day: 'ПН'})
+    },
 
+    mouseDown: function () {
+        this.setState({show: true});
+    },
+    mouseUp: function () {
+        this.setState({show: false});
+    },
+    onChange: function () {
+        this.setState({time: document.getElementById('inputRange').value})
+    },
+    dayHandler: function (day) {
+      return()=> {
+          this.setState({day: day});
+          console.log(this.state);
+      }
+    },
 
-    render:function () {
+    render: function () {
 
-        return(
+        return (
             <div id="slider">
                 <div className="days">
-                    <a href="" id="mon">ПН</a>
-                    <a href="" id="tue">ВТ</a>
-                    <a href="" id="wen">СР</a>
-                    <a href="" id="thu">ЧТ</a>
-                    <a href="" id="fri">ПТ</a>
-                    <a href="" id="sat">СБ</a>
-                    <a href="" id="sun">ВС</a>
+                    <a onClick={this.dayHandler('ПН')}>ПН</a>
+                    <a onClick={this.dayHandler('ВТ')}>ВТ</a>
+                    <a onClick={this.dayHandler('СР')}>СР</a>
+                    <a onClick={this.dayHandler('ЧТ')}>ЧТ</a>
+                    <a onClick={this.dayHandler('ПТ')}>ПТ</a>
+                    <a onClick={this.dayHandler('СБ')}>СБ</a>
+                    <a onClick={this.dayHandler('ВС')}>ВС</a>
                 </div>
                 <div className="input">
-                    <RCSlider min={0} max={24} defaultValue={12} marks={marks}/>
+                    <span>0:00</span>
+                    <input id="inputRange" type="range" min="0" max="24" step="1" onMouseDown={this.mouseDown} onMouseUp={this.mouseUp}
+                           onChange={this.onChange}/>
+                    <span>23:59</span>
+
                 </div>
+                <div className="time">{this.state.time}:00</div>
 
             </div>
         )

@@ -1,6 +1,7 @@
 package ru.fleetmap.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fleetmap.core.District;
@@ -32,5 +33,17 @@ public class MapController {
     @RequestMapping("/find")
     public Geometry find(GeometryFilter filter) throws IOException {
         return geometryRepository.findGeometryByFilter(filter);
+    }
+
+    //костыль
+    @RequestMapping("/max")
+    public double max() throws IOException {
+        double max = 0;
+        for (Geometry.Feature f : geometryLoader.load().features) {
+            for (District d : f.properties.timeline) {
+                if (d.getNumber() > max) max = d.getNumber();
+            }
+        }
+        return max;
     }
 }
