@@ -53,6 +53,7 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
+
                     if (this.state.layer != null)
                         this.map.removeLayer(this.state.layer);
                     var layer = L.geoJson(obj, {
