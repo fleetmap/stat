@@ -37,6 +37,6 @@ module.exports = {
     plugins: [
         new ExtractTextPlugin('[name].css', {allChunks: true})
     ],
-    watch: true
+    watch: false
     
 };
