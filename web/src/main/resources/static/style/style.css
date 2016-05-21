@@ -3,9 +3,10 @@ body {
   margin: 0; }
 
 .leaflet-popup-content {
-  width: 400px;
-  height: 300px;
-  padding: 10px; }
+  width: 200px;
+  height: 150px;
+  margin-right: 0px;
+  margin-bottom: 0px; }
 
 .application {
   height: 100%; }

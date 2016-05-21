@@ -5,8 +5,8 @@ var Chart = require('chart.js');
 var L = require('leaflet');
 
 // watch css!
-var chartWidth = 400;
-var chartHeight = 300;
+var chartWidth = 200;
+var chartHeight = 150;
 
 var loadHistory = function(districtName, id) {
     var xmlhttp = new XMLHttpRequest();

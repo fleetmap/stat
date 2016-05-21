@@ -20673,8 +20673,8 @@
 	var L = __webpack_require__(161);
 
 	// watch css!
-	var chartWidth = 400;
-	var chartHeight = 300;
+	var chartWidth = 200;
+	var chartHeight = 150;
 
 	var loadHistory = function loadHistory(districtName, id) {
 	    var xmlhttp = new XMLHttpRequest();
