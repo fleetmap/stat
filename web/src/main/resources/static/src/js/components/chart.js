@@ -16,13 +16,12 @@ var loadHistory = function(districtName, id) {
         console.log('ready');
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var arr = JSON.parse(xmlhttp.responseText);
-            //console.log('chart', arr);
-            //popup.id - div id for chart
             var now = new Date();
             var index = 24 * (now.getDay() == 0 ? 6 : now.getDay() - 1) + now.getHours();
-            console.log(arr, index);
+
+            arr[6] = arr[0];
             document.getElementById('s' + id).innerHTML = "Свободно: " +
-                arr[index];
+                arr[now.getDay() == 0 ? 6 : now.getDay() - 1];
             lineChart(arr, id);
         }
     };
