@@ -7,7 +7,7 @@ var chart = require('./chart');
 var Map = React.createClass({
 
         getInitialState: function () {
-            return ({show: false, time: 12, day: 'ПН', active: 'id'})
+            return ({show: false, time: 12, day: 'ПН', active: null})
         },
         map: null,
         mouseDown: function () {
@@ -23,15 +23,18 @@ var Map = React.createClass({
         },
         dayHandler: function (day, id) {
             return ()=> {
-                this.setState({day: day});
                 var elem = document.getElementById(this.state.active);
-                elem .style.color = 'black';
+                if (elem !== undefined && elem != null) {
+                    elem.style.color = 'black';
+                }
+                this.setState({day: day, active: id});
                 document.getElementById(id).style.color = 'red';
                 clearTimeout(this.timer);
                 this.timer = setTimeout(this.changeShapshot(this.map, this.state.time, this.state.day), 1000);
             }
         },
         changeShapshot: function (map, hour, weekDay) {
+            if (hour == 24) hour = 0;
             var xmlhttp = new XMLHttpRequest();
             var url = "/api/find?hour=" + hour + "&weekDay=" + weekDay;
 
@@ -50,18 +53,32 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
+<<<<<<< HEAD
 
                     /*L.geoJson(obj, {
+=======
+                    var layer = L.geoJson(obj, {
+>>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
                         style: function (feature) {
                             var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
                             return {
                                 color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
                             }
+<<<<<<< HEAD
                         },
                         onEachFeature: chart.bindPopUp
                     }).addTo(map);*/
+=======
+                        }
+                    });
+                    if (this.state.layer != null){
+                        map.removeLayer(this.state.layer);
+                    }
+                    layer.addTo(map);
+                    this.setState({layer: layer});
+>>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
                 }
-            };
+            }.bind(this);
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
         },
