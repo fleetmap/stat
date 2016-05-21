@@ -1,5 +1,7 @@
 package ru.fleetmap.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by debalid on 20.05.2016.
  */
@@ -8,6 +10,7 @@ public class District {
     private String weekDay;
     private Integer hour;
     private Double Number;
+    private Integer count;
 
     public String getTitle() {
         return title;
@@ -39,5 +42,13 @@ public class District {
 
     public void setWeekDay(String weekDay) {
         this.weekDay = weekDay;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

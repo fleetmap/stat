@@ -38,14 +38,14 @@ public class MapController {
     }
 
     @RequestMapping("/week_history")
-    public List<Double> weekHistory (String name) throws IOException {
+    public List<Integer> weekHistory (String name) throws IOException {
         GeometryFilter filter = new GeometryFilter();
         filter.setTitle(name);
         Geometry geometry = geometryRepository.findGeometryByFilter(filter);
-        List<Double> history = geometry.features.parallelStream()
+        List<Integer> history = geometry.features.parallelStream()
                 .map(feature -> feature.properties.timeline)
                 .findFirst()
-                .map(districts -> districts.stream().map(District::getNumber).collect(Collectors.toList()))
+                .map(districts -> districts.stream().map(District::getCount).collect(Collectors.toList()))
                 .orElseGet(Collections::emptyList);
         return history;
     }

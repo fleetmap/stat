@@ -13,10 +13,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.*;
@@ -31,6 +28,8 @@ public class GeometryLoader {
     public static final String HEADER_WEEKDAY = "Weekday";
     public static final String HEADER_HOUR = "Hour";
     public static final String HEADER_NUMBER = "Number";
+    public static final String HEADER_PROVIDER = "Provider";
+    public static final String HEADER_COUNT = "Count";
 
     @Value("${core.sampleDataResultCsv}")
     private String sampleDataCsvDestination;
@@ -51,7 +50,7 @@ public class GeometryLoader {
 
             records = CSVFormat.DEFAULT
                     .withDelimiter(';')
-                    .withHeader(HEADER_NAME, HEADER_WEEKDAY, HEADER_HOUR, HEADER_NUMBER)
+                    .withHeader(HEADER_NAME, HEADER_WEEKDAY, HEADER_HOUR, HEADER_NUMBER, HEADER_COUNT)
                     .parse(csvReader);
 
             // пропускаем первую запись с загоолвками
@@ -67,13 +66,15 @@ public class GeometryLoader {
                 try {
                     district.setHour(decimalFormat.parse(x.get(HEADER_HOUR)).intValue());
                     district.setNumber(Double.parseDouble(x.get(HEADER_NUMBER)));
+                    district.setWeekDay(x.get(HEADER_WEEKDAY));
+                    district.setCount(decimalFormat.parse(x.get(HEADER_COUNT)).intValue());
                 } catch (ParseException e) {
                     e.printStackTrace();
                     throw new RuntimeException("Cannot parse double in " + x.toString());
                 }
-                district.setWeekDay(x.get(HEADER_WEEKDAY));
                 districts.add(district);
             });
+
             return districts;
         }
     }
