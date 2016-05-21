@@ -52,15 +52,20 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
+
                     var layer = L.geoJson(obj, {
                         style: function (feature) {
-                            var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
+                            var color = pickHex([0, 255, 0], [255, 0, 0], feature.properties.timeLine[0].number); //magic
                             return {
-                                color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
+                                fillColor: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")",
+                                color: 'black',
+                                weight: 1,
+                                fillOpacity: 0.65
+
                             }
                         }
                     });
-                    if (this.state.layer != null){
+                    if (this.state.layer != null) {
                         map.removeLayer(this.state.layer);
                     }
                     layer.addTo(map);

@@ -19942,9 +19942,13 @@
 	                    obj = JSON.parse(xmlhttp.responseText);
 	                    layer = L.geoJson(obj, {
 	                        style: function style(feature) {
-	                            var color = pickHex([255, 0, 0], [0, 255, 0], feature.properties.timeLine[0].number / 6.0); //magic
+	                            var color = pickHex([0, 255, 0], [255, 0, 0], feature.properties.timeLine[0].number); //magic
 	                            return {
-	                                color: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")"
+	                                fillColor: "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")",
+	                                color: 'black',
+	                                weight: 1,
+	                                fillOpacity: 0.65
+
 	                            };
 	                        }
 	                    });
