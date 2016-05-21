@@ -34,6 +34,7 @@
     "build": "webpack -p --config webpack.publish.config.js"
   },
   "dependencies": {
+    "chart.js": "^2.1.3",
     "react-sticky": "^5.0.0",
     "transliterate": "0.0.2"
   }
