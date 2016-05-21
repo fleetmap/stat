@@ -46,8 +46,9 @@ public class GeometryLoader {
 
     private List<District> loadCsv() throws IOException {
         Iterable<CSVRecord> records;
-        try (Reader csvReader = new InputStreamReader(new FileInputStream(sampleDataCsvDestination),
+        try (Reader csvReader = new InputStreamReader(GeometryLoader.class.getResourceAsStream(sampleDataCsvDestination),
                 Charset.forName(CSV_ENCODING))) {
+
             records = CSVFormat.DEFAULT
                     .withDelimiter(';')
                     .withHeader(HEADER_NAME, HEADER_WEEKDAY, HEADER_HOUR, HEADER_NUMBER)
@@ -81,7 +82,7 @@ public class GeometryLoader {
         ObjectMapper mapper = new ObjectMapper();
         Geometry geometry = mapper
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .readValue(new File(carsharingMapJsonDestination), Geometry.class);
+                .readValue(GeometryLoader.class.getResourceAsStream(carsharingMapJsonDestination), Geometry.class);
 
         geometry.features.forEach(x -> {
             x.properties.timeline = loadedDistricts.parallelStream() // медленно!

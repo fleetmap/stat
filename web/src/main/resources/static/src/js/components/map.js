@@ -3,6 +3,7 @@
  */
 var React = require('react');
 var L = require('leaflet');
+var chart = require('./chart');
 var Map = React.createClass({
 
         getInitialState: function () {
@@ -52,8 +53,16 @@ var Map = React.createClass({
                             Math.round(color1[2] * w1 + color2[2] * w2)];
                         return rgb;
                     }
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+                    /*L.geoJson(obj, {
+=======
+>>>>>>> 56ac75581e011c5c849adfcd22eaf6fb8663118a
                     var layer = L.geoJson(obj, {
+>>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
                         style: function (feature) {
                             var color = pickHex([0, 255, 0], [255, 0, 0], feature.properties.timeLine[0].number); //magic
                             return {
@@ -63,6 +72,11 @@ var Map = React.createClass({
                                 fillOpacity: 0.65
 
                             }
+<<<<<<< HEAD
+                        },
+                        onEachFeature: chart.bindPopUp
+                    }).addTo(map);*/
+=======
                         }
                     });
                     if (this.state.layer != null) {
@@ -70,6 +84,7 @@ var Map = React.createClass({
                     }
                     layer.addTo(map);
                     this.setState({layer: layer});
+>>>>>>> d87418d44dbb0d4cbea1d3351a438bf5d83a5a73
                 }
             }.bind(this);
             xmlhttp.open("GET", url, true);
@@ -109,6 +124,7 @@ var Map = React.createClass({
                 center: [55.75, 37.61],
                 zoom: 13
             });
+            this.map.on('popupopen', chart.onPopUpOpen);
             L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(this.map);
