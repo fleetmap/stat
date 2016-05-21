@@ -49,7 +49,7 @@ public class MapController {
                 .map(districts -> districts.stream()
                         //.sorted((x, y) -> 31 * (day(x.getWeekDay()) - day(y.getWeekDay() + (x.getHour() - y.getHour()))))
                         .sorted(Comparator.comparing(x -> 24 * day(x.getWeekDay()) + x.getHour()))
-                        .map(District::getCount)
+                        .map(x -> x.getCount()/10)
                         .collect(Collectors.toList()))
                 .orElseGet(Collections::emptyList);
         return history;
