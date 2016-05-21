@@ -5,10 +5,15 @@ body{
 
 .leaflet-popup-content {
   width: 200px;
-  height: 150px;
+  height: 170px;
   //padding: 10px;
   margin-right: 0px;
   margin-bottom: 0px;
+  span{
+    position: relative;
+    top:150px;
+    left: calc(50%-45px);
+  }
 }
 
 .application{

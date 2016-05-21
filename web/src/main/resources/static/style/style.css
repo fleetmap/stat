@@ -4,9 +4,13 @@ body {
 
 .leaflet-popup-content {
   width: 200px;
-  height: 150px;
+  height: 170px;
   margin-right: 0px;
   margin-bottom: 0px; }
+  .leaflet-popup-content span {
+    position: relative;
+    top: 150px;
+    left: calc(50%-38px); }
 
 .application {
   height: 100%; }

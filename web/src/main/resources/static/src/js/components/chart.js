@@ -21,8 +21,8 @@ var loadHistory = function(districtName, id) {
             var now = new Date();
             var index = 24 * (now.getDay() == 0 ? 6 : now.getDay() - 1) + now.getHours();
             console.log(arr, index);
-            document.getElementById('s' + id).innerHTML = "В данный момент доступно " +
-                arr[index] + " машин.";
+            document.getElementById('s' + id).innerHTML = "Свободно: " +
+                arr[index];
             lineChart(arr, id);
         }
     };
